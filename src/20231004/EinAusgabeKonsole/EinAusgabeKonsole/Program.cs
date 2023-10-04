@@ -71,8 +71,13 @@ namespace EinAusgabeKonsole
                         Array enumArray = Enum.GetValues(typeof(ConsoleColor));
                         Random r = new Random();
                         int colorNumber = r.Next(0, enumArray.Length - 1);
-                        Console.SetCursorPosition(0, 0);
                         Console.BackgroundColor = (ConsoleColor)colorNumber;
+                        Console.ForegroundColor = ConsoleColor.Black;
+
+                        if (Console.BackgroundColor == ConsoleColor.Black)
+                            Console.ForegroundColor = ConsoleColor.Red;
+
+                        Console.Clear();
                         break;
                     case 3:
                         Console.Clear();
@@ -85,17 +90,18 @@ namespace EinAusgabeKonsole
                         Console.Write("Set new title: ");
                         string title = Console.ReadLine();
                         Console.Title = title;
+                        Console.Clear();
                         break;
                     case 6:
                         Console.Write("Set window dimensions HeightxWidth: ");
                         string dimensions = Console.ReadLine();
-                        string part1 = dimensions.Substring(0, 2);
-                        string part2 = dimensions.Substring(3, 3);
+                        string height = dimensions.Substring(0, 3);
+                        string width = dimensions.Substring(4, 3);
                         //Console.WindowHeight = Convert.ToInt32(part1);
                         //Console.WindowWidth = Convert.ToInt32(part2);
                         //Console.WriteLine(Convert.ToString(Console.LargestWindowHeight));
                         //Console.WriteLine(Convert.ToString(Console.LargestWindowWidth));
-                        Console.SetWindowSize(Convert.ToInt32(part2), Convert.ToInt32(part1));
+                        Console.SetWindowSize(Convert.ToInt32(width), Convert.ToInt32(height));
                         //Console.SetWindowPosition(1000, 1000);
                         break;
                     default:
