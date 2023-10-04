@@ -1,1 +1,3 @@
-# uebungsbeispiele_2023
+# Uebungsbeispiele_2023
+
+Hier findet man Übungsbeispiele zu C#.
