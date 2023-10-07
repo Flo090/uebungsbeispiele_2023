@@ -12,6 +12,8 @@ namespace GeometrischeFiguren
         {
             for (int i = 0; i < 3; i++)
             {
+                // Schriftfarbe vor Ausgabe ändern
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(new string('*', Console.WindowWidth));
             }
 
@@ -19,9 +21,57 @@ namespace GeometrischeFiguren
             int xPosHeader = Console.WindowWidth / 2 - title.Length / 2;
             // Cursor-Position manuell setzen
             Console.SetCursorPosition(xPosHeader, 1);
+            // Vor Ausgabe Schriftfarbe umändern
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write(title);
             Console.SetCursorPosition(0, 3);
         }
+        static void zeichneParallelogramm()
+        {
+            int hoehe = 5;
+            int breite = 10;
+            int einrückung = 0;
+
+            Console.WriteLine("\nParallelogramm\n");
+            Console.ForegroundColor = ConsoleColor.Green;   // Farbe setzen
+
+            for (int zeile = 0; zeile < hoehe; zeile++)
+            {
+                Console.Write(new string(' ', einrückung));
+                for (int spalte = 0; spalte < breite; spalte++)
+                {
+                    Console.Write("*");
+                }
+                Console.WriteLine();
+                einrückung++;
+            }
+            Console.ForegroundColor = ConsoleColor.DarkYellow;   // Farbe zurücksetzen
+        }
+        static void zeichneTrapez()
+        {
+            int hoehe = 4;
+            int breiteOben = 6;
+            int breiteUnten = 12;
+            int einrückung = 0;
+            int breiteAktuell = breiteOben;
+
+            Console.WriteLine("\nTrapez\n");
+            Console.ForegroundColor = ConsoleColor.Green;   // Farbe setzen
+
+            for (int zeile = 0; zeile < hoehe; zeile++)
+            {
+                Console.Write(new string(' ', (breiteUnten - breiteOben) / 2 - einrückung));
+                for (int spalte = 0; spalte < breiteAktuell; spalte++)
+                {
+                    Console.Write("*");
+                }
+                Console.WriteLine();
+                einrückung++;
+                breiteAktuell += 2;
+            }
+            Console.ForegroundColor = ConsoleColor.DarkYellow;   // Farbe zurücksetzen
+        }
+
         static void Main(string[] args)
         {
             //****************************************
@@ -69,7 +119,7 @@ namespace GeometrischeFiguren
             Console.WriteLine("2 - Trapez");
             // Auswahl einlesen
             Console.Write("\nIhre Wahl: ");
-            
+
             try
             {
                 auswahl = uint.Parse(Console.ReadLine());
@@ -80,10 +130,14 @@ namespace GeometrischeFiguren
                 Environment.Exit(1);
             }
 
+            Console.WriteLine(new string('-', 13));
+
             // Abfrage mit if
             if (auswahl == 1)
             {
-                // Parallelogramm
+                // Parallelogramm zeichnen
+                zeichneParallelogramm();
+
                 // Eingabe
                 try
                 {
@@ -113,11 +167,13 @@ namespace GeometrischeFiguren
 
                 // Ausgabe der Ergebnisse
                 Console.WriteLine($"\nDer Umfang betraegt: {parallelogrammUmfang} m");
-                Console.WriteLine($"Der Flaecheninhalt betraegt: {parallelogrammFlaeche} m²");
+                Console.WriteLine($"Der Flaecheninhalt betraegt: {parallelogrammFlaeche} m²\n");
             }
             else if (auswahl == 2)
             {
-                // Trapez
+                // Trapez zeichnen
+                zeichneTrapez();
+
                 // Eingabe
                 try
                 {
@@ -151,7 +207,7 @@ namespace GeometrischeFiguren
 
                 // Ausgabe der Ergebnisse
                 Console.WriteLine($"\nDer Umfang betraegt: {trapezUmfang} m");
-                Console.WriteLine($"Der Flaecheninhalt betraegt: {trapezFlaeche} m²");
+                Console.WriteLine($"Der Flaecheninhalt betraegt: {trapezFlaeche} m²\n");
             }
             else
             {
