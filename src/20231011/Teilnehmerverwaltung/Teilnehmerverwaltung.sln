@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teilnehmerverwaltung", "Teilnehmerverwaltung\Teilnehmerverwaltung.csproj", "{CA9513AE-2138-4429-B9AE-E02DE68F9860}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA9513AE-2138-4429-B9AE-E02DE68F9860}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA9513AE-2138-4429-B9AE-E02DE68F9860}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA9513AE-2138-4429-B9AE-E02DE68F9860}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA9513AE-2138-4429-B9AE-E02DE68F9860}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD588D02-BB39-4768-B9ED-F3B5E4734B69}
+	EndGlobalSection
+EndGlobal
