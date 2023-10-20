@@ -41,26 +41,63 @@ namespace Lottoschein
             erstelleZahlenbloecke(anzahlZahlenbloecke, zahlenblock);
 
             // Ausgabe
-            ausgabeZahlenblock(anzahlZahlenbloecke, zahlenblock);
+            ausgabeZahlenbloecke(anzahlZahlenbloecke, zahlenblock);
         }
 
-        private static void ausgabeZahlenblock(int anzahlZahlenbloecke, int[,] zahlenblock)
+        private static void ausgabeZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock)
         {
-            for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
+            /*for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
             {
                 for (int zeile = 0; zeile < 6; zeile++)
                 {
                     Console.WriteLine(zahlenblock[zeile, spalte]);
                 }
+            }*/
+
+            int[] lottozahlen = new int[6];
+
+            for (int j = 0; j < anzahlZahlenbloecke; j++)
+            {
+                for (int zeile = 0; zeile < 6; zeile++)
+                {
+                    lottozahlen[zeile] = zahlenblock[zeile, j];
+                }
+
+                for (int i = 1; i < 46; i++)
+                {
+                    if (lottozahlen.Contains(i))
+                    {
+                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    if (i % 6 == 0)
+                    {
+                        Console.Write(i);
+                        Console.ResetColor();
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        if (i < 10)
+                        {
+                            Console.Write(i + "  ");
+                        }
+                        else
+                        {
+                            Console.Write(i + " ");
+                        }
+                    }
+                    Console.ResetColor();
+                }
+                Console.WriteLine("\n");
             }
         }
 
         public static void erstelleZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock)
         {
-            int[] meinZahlenBlock = new int[6];
-
             for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
             {
+                int[] meinZahlenBlock = new int[6];
                 meinZahlenBlock = erstelleZahlenblock();
 
                 for (int zeile = 0; zeile < 6; zeile++)
