@@ -23,22 +23,26 @@ namespace Lottoschein
     // - verwenden Sie Farben für die Ein- und Ausgabe
     internal class Program
     {
+        const int ANZAHL_LOTTOZAHLEN_ZIEHUNG = 6;
+        const int ANZAHL_LOTTOZAHLEN_GESAMT = 45;
         static void Main(string[] args)
         {
-            int anzahlZahlenbloecke = -1;
-            string titel = " Lotto 6 aus 45 ";
-            const int ANZAHL_LOTTOZAHLEN = 6;
+            int anzahlZahlenbloecke = 0;
             int[,] zahlenblock;                     // [zeile, spalte]
+            
+            string titel = " Lotto 6 aus 45 ";      // Titel
+           
+            Random zufallszahl = new Random();      // Zufallszahl
 
             // Header
             writeHeader(titel);
 
             // Anzahl Zahlenblöcke durch User-Eingabe
             anzahlZahlenbloecke = uebergabeAnzahlZahlenbloecke();
-            zahlenblock = new int[ANZAHL_LOTTOZAHLEN, anzahlZahlenbloecke];
+            zahlenblock = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG, anzahlZahlenbloecke];
 
             // Zahlenbloecke erstellen
-            erstelleZahlenbloecke(anzahlZahlenbloecke, zahlenblock);
+            erstelleZahlenbloecke(anzahlZahlenbloecke, zahlenblock, zufallszahl);
 
             // Ausgabe
             ausgabeZahlenbloecke(anzahlZahlenbloecke, zahlenblock);
@@ -46,24 +50,16 @@ namespace Lottoschein
 
         private static void ausgabeZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock)
         {
-            /*for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
-            {
-                for (int zeile = 0; zeile < 6; zeile++)
-                {
-                    Console.WriteLine(zahlenblock[zeile, spalte]);
-                }
-            }*/
-
-            int[] lottozahlen = new int[6];
+            int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
 
             for (int j = 0; j < anzahlZahlenbloecke; j++)
             {
-                for (int zeile = 0; zeile < 6; zeile++)
+                for (int zeile = 0; zeile < ANZAHL_LOTTOZAHLEN_ZIEHUNG; zeile++)
                 {
                     lottozahlen[zeile] = zahlenblock[zeile, j];
                 }
 
-                for (int i = 1; i < 46; i++)
+                for (int i = 1; i < ANZAHL_LOTTOZAHLEN_GESAMT + 1; i++)
                 {
                     if (lottozahlen.Contains(i))
                     {
@@ -93,33 +89,33 @@ namespace Lottoschein
             }
         }
 
-        public static void erstelleZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock)
+        public static void erstelleZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock, Random zufallszahl)
         {
             for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
             {
-                int[] meinZahlenBlock = new int[6];
-                meinZahlenBlock = erstelleZahlenblock();
+                int[] meinZahlenBlock = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
+                meinZahlenBlock = erstelleZahlenblock(zufallszahl);
 
-                for (int zeile = 0; zeile < 6; zeile++)
+                for (int zeile = 0; zeile < ANZAHL_LOTTOZAHLEN_ZIEHUNG; zeile++)
                 {
                     zahlenblock[zeile, spalte] = meinZahlenBlock[zeile];
                 }
             }
         }
 
-        private static int[] erstelleZahlenblock()
+        private static int[] erstelleZahlenblock(Random zufallszahl)
         {
-            int[] lottozahlen = new int[6];
-            Random zufallszahl = new Random();
-            int zahl = 0;
+            int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
+            //zufallszahl = new Random();                               // Fehler
             
-            // Lottozahl generieren (6 aus 45)
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < ANZAHL_LOTTOZAHLEN_ZIEHUNG; i++)        // Lottozahl generieren (6 aus 45)
             {
+                int zahl = 0;
+
                 // Zufallszahl erzeugen, die noch nicht im Array enthalten ist
                 do
                 {
-                    zahl = zufallszahl.Next(1, 46);
+                    zahl = zufallszahl.Next(1, ANZAHL_LOTTOZAHLEN_GESAMT + 1);
                 }
                 while (lottozahlen.Contains(zahl));
 
@@ -147,6 +143,8 @@ namespace Lottoschein
                 }
             }
             while (!(anzahl >= 1 && anzahl <= 12));
+
+            Console.WriteLine("\n");
 
             return anzahl;
         }
