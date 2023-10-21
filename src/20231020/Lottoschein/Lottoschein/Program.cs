@@ -35,7 +35,7 @@ namespace Lottoschein
             Random zufallszahl = new Random();      // Zufallszahl
 
             // Header
-            writeHeader(titel);
+            writeHeader(titel, ConsoleColor.Blue);
 
             // Anzahl Zahlenblöcke durch User-Eingabe
             anzahlZahlenbloecke = uebergabeAnzahlZahlenbloecke();
@@ -52,20 +52,21 @@ namespace Lottoschein
         {
             int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
 
-            for (int j = 0; j < anzahlZahlenbloecke; j++)
+            for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)                           // Alle Zahlenblöcke durchlaufen
             {
                 for (int zeile = 0; zeile < ANZAHL_LOTTOZAHLEN_ZIEHUNG; zeile++)
                 {
-                    lottozahlen[zeile] = zahlenblock[zeile, j];
+                    lottozahlen[zeile] = zahlenblock[zeile, spalte];                     
                 }
 
                 for (int i = 1; i < ANZAHL_LOTTOZAHLEN_GESAMT + 1; i++)
                 {
                     if (lottozahlen.Contains(i))
                     {
-                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        Console.BackgroundColor = ConsoleColor.Blue;
                         Console.ForegroundColor = ConsoleColor.Red;
                     }
+
                     if (i % 6 == 0)
                     {
                         Console.Write(i);
@@ -76,20 +77,23 @@ namespace Lottoschein
                     {
                         if (i < 10)
                         {
-                            Console.Write(i + "  ");
+                            Console.Write(i);
+                            Console.ResetColor();
+                            Console.Write("  ");
                         }
                         else
                         {
-                            Console.Write(i + " ");
+                            Console.Write(i);
+                            Console.ResetColor();
+                            Console.Write(" ");
                         }
                     }
-                    Console.ResetColor();
                 }
                 Console.WriteLine("\n");
             }
         }
 
-        public static void erstelleZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock, Random zufallszahl)
+        private static void erstelleZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock, Random zufallszahl)
         {
             for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
             {
@@ -127,37 +131,62 @@ namespace Lottoschein
         private static int uebergabeAnzahlZahlenbloecke()
         {
             int anzahl = 0;
+            bool exception = false;
 
             // Einlesen der Anzahl von Zahlenbloecken
             do
             {
+                Console.ResetColor();
                 Console.Write("Bitte geben Sie die Anzahl der Zahlenbloecke ein: ");
-                
+                Console.ForegroundColor = ConsoleColor.Blue;
+
                 try
                 {
                     anzahl = int.Parse(Console.ReadLine());
+
+                    if ((anzahl < 1 || anzahl > 12))
+                    {
+                        exception = true;
+                    }
                 }
                 catch
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("ERROR: Ungültige Eingabe!!!");
+                    Console.ResetColor();
+                }
+
+                if (exception)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("ERROR: Zahl muss zwischen 1 und 12 sein!!!");
+                    Console.ResetColor();
+                    exception = false;
                 }
             }
             while (!(anzahl >= 1 && anzahl <= 12));
 
+            Console.ResetColor();
             Console.WriteLine("\n");
 
             return anzahl;
         }
 
-        private static void writeHeader(string titel)
+        private static void writeHeader(string titel, ConsoleColor schriftfarbe)
         {
             Console.WriteLine(new string('-', Console.WindowWidth));
             Console.WriteLine(new string('-', Console.WindowWidth));
             Console.WriteLine(new string('-', Console.WindowWidth));
 
+            // Farbe setzen
+            Console.ForegroundColor = schriftfarbe;
+
             // Cursor-Position setzen
             Console.SetCursorPosition((Console.WindowWidth - titel.Length) / 2, 1);
             Console.WriteLine(titel);
+
+            // Farbe zurücksetzen
+            Console.ResetColor();
 
             // Cursor-Position zurücksetzen
             Console.SetCursorPosition(0, 4);
