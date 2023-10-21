@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace TeilnehmerVerwaltung_v2
@@ -58,7 +59,7 @@ namespace TeilnehmerVerwaltung_v2
             Console.WriteLine("\nDie Teilnehmerdaten: \n");
             DisplayStudentInfo(teilnehmerListe);
             // TODO: Implement JSON and XML format too !!!
-            SaveStudentInfosToFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Json);
+            SaveStudentInfosToFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Xml);
         }
 
         private static void SaveStudentInfosToFile(Teilnehmer[] students, string filename, TextFileFormat fileFormat)
@@ -92,7 +93,7 @@ namespace TeilnehmerVerwaltung_v2
                     {
                         studentList.Add(students[i]);;     
                     }
-                    jsonString = JsonConvert.SerializeObject(students, Formatting.Indented);    // Newtonsoft.Json
+                    jsonString = JsonConvert.SerializeObject(students, Newtonsoft.Json.Formatting.Indented);    // Newtonsoft.Json
                     sw.WriteLine(jsonString);
                 }
 
@@ -100,6 +101,40 @@ namespace TeilnehmerVerwaltung_v2
             else if (fileFormat == TextFileFormat.Xml)
             {
                 filename = filename + ".xml";
+
+                using (XmlWriter xmlWriter = XmlWriter.Create(filename))
+                {
+                    xmlWriter.WriteStartDocument();
+                    xmlWriter.WriteStartElement("Teilnehmer");
+
+                    for (int i = 0; i < students.Length; i++)
+                    {
+                        xmlWriter.WriteStartElement("Teilnehmer");
+                            xmlWriter.WriteStartElement("Vorname");
+                            xmlWriter.WriteString(students[i].Name);
+                            xmlWriter.WriteEndElement();
+
+                            xmlWriter.WriteStartElement("Nachname");
+                            xmlWriter.WriteString(students[i].Nachname);
+                            xmlWriter.WriteEndElement();
+
+                            xmlWriter.WriteStartElement("Geburtsdatum");
+                            xmlWriter.WriteString(students[i].Geburtsdatum.ToShortDateString());
+                            xmlWriter.WriteEndElement();
+
+                            xmlWriter.WriteStartElement("PLZ");
+                            xmlWriter.WriteString(students[i].Plz.ToString());
+                            xmlWriter.WriteEndElement();
+
+                            xmlWriter.WriteStartElement("Wohnort");
+                            xmlWriter.WriteString(students[i].Ort);
+                            xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                    }
+
+                    xmlWriter.WriteEndDocument();
+                    xmlWriter.Close();
+                }
             }
         }
 
