@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace TeilnehmerVerwaltung_v2
 {
@@ -33,33 +34,93 @@ namespace TeilnehmerVerwaltung_v2
         {
             int teilnehmerCount = 0;
             Teilnehmer teilnehmer = new Teilnehmer();
-            Teilnehmer[] teilnehmerListe;
+            Teilnehmer[] teilnehmerListe = null;
             string headerText = "Teilnehmer Verwaltung v2.0   (c) 2023 Wifi-Soft";
 
             // Header
             CreateHeader(headerText, ConsoleColor.Yellow, true);
 
             // Abfrage Anzahl Teilnehmer
-            teilnehmerCount = ReadInt("Bitte Anzahl Teilnehmer eingeben: ");
+            //teilnehmerCount = ReadInt("Bitte Anzahl Teilnehmer eingeben: ");
 
             // TeilnehmerListe vorbereiten
-            teilnehmerListe = new Teilnehmer[teilnehmerCount];
+            //teilnehmerListe = new Teilnehmer[teilnehmerCount];
 
             // Daten einlesen
-            Console.WriteLine("Bitte geben Sie die Teilnehmerdaten ein: ");
+            //Console.WriteLine("Bitte geben Sie die Teilnehmerdaten ein: ");
 
-            for (int i = 0; i < teilnehmerListe.Length; i++)
-            {
-                Console.WriteLine($"\nTeilnehmer {i + 1} / {teilnehmerListe.Length}: ");
-                // TODO: Die GetStudentInfos() Methode kann auch überladen werden, damit Sie eine ganze Liste einliest ...
-                teilnehmerListe[i] = GetStudentInfos();
-            }
+            //for (int i = 0; i < teilnehmerListe.Length; i++)
+            //{
+            //    Console.WriteLine($"\nTeilnehmer {i + 1} / {teilnehmerListe.Length}: ");
+            //    // TODO: Die GetStudentInfos() Methode kann auch überladen werden, damit Sie eine ganze Liste einliest ...
+            //    teilnehmerListe[i] = GetStudentInfos();
+            //}
 
             // Ausgabe der Daten
             Console.WriteLine("\nDie Teilnehmerdaten: \n");
-            DisplayStudentInfo(teilnehmerListe);
+            //DisplayStudentInfo(teilnehmerListe);
             // TODO: Implement JSON and XML format too !!!
-            SaveStudentInfosToFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Xml);
+            //SaveStudentInfosToFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Json);
+
+            teilnehmerListe = OpenStudentInfosFromFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Json);
+            Console.WriteLine("Student Infos from File:");
+            DisplayStudentInfo(teilnehmerListe);
+        }
+
+        private static Teilnehmer [] OpenStudentInfosFromFile(Teilnehmer[] students, string filename, TextFileFormat fileFormat)
+        {
+            if (fileFormat == TextFileFormat.Csv)
+            {
+                filename = filename + ".csv";
+                string line = string.Empty;
+                Teilnehmer teilnehmer = new Teilnehmer();
+                List <Teilnehmer> teilnehmerliste = new List<Teilnehmer>();
+
+                using (StreamReader sr = new StreamReader(filename))
+                {
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        var values = line.Split(',');
+
+                        teilnehmer.Name = values[0];
+                        teilnehmer.Nachname = values[1];
+                        teilnehmer.Geburtsdatum = Convert.ToDateTime(values[2]);
+                        teilnehmer.Plz = Convert.ToInt32(values[3]);
+                        teilnehmer.Ort = values[4];
+
+                        teilnehmerliste.Add(teilnehmer);
+                    }
+                }
+                students = teilnehmerliste.ToArray();
+
+                return students;
+            }
+            else if (fileFormat == TextFileFormat.Json)
+            {
+                string jsonString = string.Empty;
+                List<Teilnehmer> teilnehmerListe = new List<Teilnehmer>();
+
+                filename = filename + ".json";
+
+                using (StreamReader sr = new StreamReader(filename))
+                {
+                    jsonString = sr.ReadToEnd();
+                    teilnehmerListe = JsonConvert.DeserializeObject<List<Teilnehmer>>(jsonString);
+
+                }
+                return teilnehmerListe.ToArray();
+            }
+            else if (fileFormat == TextFileFormat.Xml)
+            {
+                filename = filename + ".xml";
+
+                using (StreamReader sr = new StreamReader(filename))
+                {
+
+                }
+                return null;
+            }
+            return null;
         }
 
         private static void SaveStudentInfosToFile(Teilnehmer[] students, string filename, TextFileFormat fileFormat)
