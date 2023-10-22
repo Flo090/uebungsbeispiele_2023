@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace TeilnehmerVerwaltung_v2
 {
@@ -59,9 +60,9 @@ namespace TeilnehmerVerwaltung_v2
             Console.WriteLine("\nDie Teilnehmerdaten: \n");
             //DisplayStudentInfo(teilnehmerListe);
             // TODO: Implement JSON and XML format too !!!
-            //SaveStudentInfosToFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Csv);
+            //SaveStudentInfosToFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Json);
 
-            teilnehmerListe = OpenStudentInfosFromFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Csv);
+            teilnehmerListe = OpenStudentInfosFromFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Json);
             Console.WriteLine("Student Infos from File:");
             DisplayStudentInfo(teilnehmerListe);
         }
@@ -75,9 +76,9 @@ namespace TeilnehmerVerwaltung_v2
                 Teilnehmer teilnehmer = new Teilnehmer();
                 List <Teilnehmer> teilnehmerliste = new List<Teilnehmer>();
 
-                using (StreamReader sw = new StreamReader(filename))
+                using (StreamReader sr = new StreamReader(filename))
                 {
-                    while ((line = sw.ReadLine()) != null)
+                    while ((line = sr.ReadLine()) != null)
                     {
                         var values = line.Split(',');
 
@@ -97,20 +98,23 @@ namespace TeilnehmerVerwaltung_v2
             else if (fileFormat == TextFileFormat.Json)
             {
                 string jsonString = string.Empty;
+                List<Teilnehmer> teilnehmerListe = new List<Teilnehmer>();
 
                 filename = filename + ".json";
 
-                using (StreamReader sw = new StreamReader(filename))
+                using (StreamReader sr = new StreamReader(filename))
                 {
+                    jsonString = sr.ReadToEnd();
+                    teilnehmerListe = JsonConvert.DeserializeObject<List<Teilnehmer>>(jsonString);
 
                 }
-                return null;
+                return teilnehmerListe.ToArray();
             }
             else if (fileFormat == TextFileFormat.Xml)
             {
                 filename = filename + ".xml";
 
-                using (StreamReader sw = new StreamReader(filename))
+                using (StreamReader sr = new StreamReader(filename))
                 {
 
                 }
