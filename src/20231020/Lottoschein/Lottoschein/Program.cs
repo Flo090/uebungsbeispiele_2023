@@ -27,29 +27,31 @@ namespace Lottoschein
         const int ANZAHL_LOTTOZAHLEN_GESAMT = 45;
         static void Main(string[] args)
         {
+            // Deklaration & Initialisierung
             int anzahlZahlenbloecke = 0;
             int[,] zahlenblock;                     // [zeile, spalte]
-            
-            string titel = " Lotto 6 aus 45 ";      // Titel
-           
-            Random zufallszahl = new Random();      // Zufallszahl
+            // Titel
+            string titel = " Lotto 6 aus 45 ";
+            // Zufallszahl
+            Random zufallszahl = new Random();      
 
             // Header
             writeHeader(titel, ConsoleColor.Blue);
 
             // Anzahl Zahlenblöcke durch User-Eingabe
-            anzahlZahlenbloecke = uebergabeAnzahlZahlenbloecke();
+            anzahlZahlenbloecke = rueckgabeAnzahlZahlenbloecke();
             zahlenblock = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG, anzahlZahlenbloecke];
 
             // Zahlenbloecke erstellen
-            erstelleZahlenbloecke(anzahlZahlenbloecke, zahlenblock, zufallszahl);
+            erstelleZahlenbloecke(zahlenblock, zufallszahl);
 
             // Ausgabe
-            ausgabeZahlenbloecke(anzahlZahlenbloecke, zahlenblock);
+            ausgabeZahlenbloecke(zahlenblock);
         }
 
-        private static void ausgabeZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock)
+        private static void ausgabeZahlenbloecke(int[,] zahlenblock)
         {
+            int anzahlZahlenbloecke = zahlenblock.GetLength(1);
             int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
 
             for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)                           // Alle Zahlenblöcke durchlaufen
@@ -93,16 +95,18 @@ namespace Lottoschein
             }
         }
 
-        private static void erstelleZahlenbloecke(int anzahlZahlenbloecke, int[,] zahlenblock, Random zufallszahl)
+        private static void erstelleZahlenbloecke(int[,] zahlenblock, Random zufallszahl)
         {
+            int anzahlZahlenbloecke = zahlenblock.GetLength(1);
+            int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
+
             for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
             {
-                int[] meinZahlenBlock = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
-                meinZahlenBlock = erstelleZahlenblock(zufallszahl);
+                lottozahlen = erstelleZahlenblock(zufallszahl);
 
                 for (int zeile = 0; zeile < ANZAHL_LOTTOZAHLEN_ZIEHUNG; zeile++)
                 {
-                    zahlenblock[zeile, spalte] = meinZahlenBlock[zeile];
+                    zahlenblock[zeile, spalte] = lottozahlen[zeile];
                 }
             }
         }
@@ -128,7 +132,7 @@ namespace Lottoschein
             return lottozahlen;
         }
 
-        private static int uebergabeAnzahlZahlenbloecke()
+        private static int rueckgabeAnzahlZahlenbloecke()
         {
             int anzahl = 0;
             bool exception = false;
