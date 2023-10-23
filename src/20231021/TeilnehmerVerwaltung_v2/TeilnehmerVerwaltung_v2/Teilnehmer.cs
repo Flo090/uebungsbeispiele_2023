@@ -2,7 +2,7 @@
 
 namespace TeilnehmerVerwaltung_v2
 {
-    internal struct Teilnehmer
+    public struct Teilnehmer
     {
         public string Name;
         public string Nachname;

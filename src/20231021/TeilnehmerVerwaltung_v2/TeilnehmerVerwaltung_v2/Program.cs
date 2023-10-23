@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace TeilnehmerVerwaltung_v2
@@ -62,7 +63,7 @@ namespace TeilnehmerVerwaltung_v2
             // TODO: Implement JSON and XML format too !!!
             //SaveStudentInfosToFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Json);
 
-            teilnehmerListe = OpenStudentInfosFromFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Json);
+            teilnehmerListe = OpenStudentInfosFromFile(teilnehmerListe, "meineTeilnehmerDaten", TextFileFormat.Xml);
             Console.WriteLine("Student Infos from File:");
             DisplayStudentInfo(teilnehmerListe);
         }
@@ -113,12 +114,42 @@ namespace TeilnehmerVerwaltung_v2
             else if (fileFormat == TextFileFormat.Xml)
             {
                 filename = filename + ".xml";
+                Teilnehmer teilnehmer = new Teilnehmer();
+                List<Teilnehmer> teilnehmerliste = new List<Teilnehmer>();
 
-                using (StreamReader sr = new StreamReader(filename))
+                using (XmlReader xmlReader = XmlReader.Create(filename))
                 {
+                    while (xmlReader.Read())
+                    {
+                        if (xmlReader.IsStartElement())
+                        {
+                            switch (xmlReader.Name.ToString())
+                            {
+                                case "Vorname":
+                                    teilnehmer.Name = xmlReader.ReadString();
+                                    break;
 
+                                case "Nachname":
+                                    teilnehmer.Nachname = xmlReader.ReadString();
+                                    break;
+
+                                case "Geburtsdatum":
+                                    teilnehmer.Geburtsdatum = Convert.ToDateTime(xmlReader.ReadString());
+                                    break;
+
+                                case "PLZ":
+                                    teilnehmer.Plz = Convert.ToInt32(xmlReader.ReadString());
+                                    break;
+
+                                case "Wohnort":
+                                    teilnehmer.Ort = xmlReader.ReadString();
+                                    teilnehmerliste.Add(teilnehmer);
+                                    break;
+                            }
+                        }
+                    }
                 }
-                return null;
+                return teilnehmerliste.ToArray();
             }
             return null;
         }
