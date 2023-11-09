@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
@@ -23,8 +24,10 @@ namespace Lottoschein
     // - verwenden Sie Farben für die Ein- und Ausgabe
     internal class Program
     {
-        const int ANZAHL_LOTTOZAHLEN_ZIEHUNG = 6;
-        const int ANZAHL_LOTTOZAHLEN_GESAMT = 45;
+        private const int ANZAHL_LOTTOZAHLEN_ZIEHUNG = 6;
+        private const int ANZAHL_LOTTOZAHLEN_GESAMT = 45;
+        private static Random zufallszahl = new Random();
+
         static void Main(string[] args)
         {
             // Deklaration & Initialisierung
@@ -32,8 +35,6 @@ namespace Lottoschein
             int[,] zahlenblock;                     // [zeile, spalte]
             // Titel
             string titel = " Lotto 6 aus 45 ";
-            // Zufallszahl
-            Random zufallszahl = new Random();      
 
             // Header
             WriteHeader(titel, ConsoleColor.Blue);
@@ -43,7 +44,7 @@ namespace Lottoschein
             zahlenblock = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG, anzahlZahlenbloecke];
 
             // Zahlenbloecke erstellen
-            ErstelleZahlenbloecke(zahlenblock, zufallszahl);
+            ErstelleZahlenbloecke(zahlenblock);
 
             // Ausgabe
             AusgabeZahlenbloecke(zahlenblock);
@@ -53,15 +54,37 @@ namespace Lottoschein
         {
             int anzahlZahlenbloecke = zahlenblock.GetLength(1);
             int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
+            int z = 0;
+            int s = 1;
+            bool ersteZeileVoll = false;
 
             for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)                           // Alle Zahlenblöcke durchlaufen
             {
                 for (int zeile = 0; zeile < ANZAHL_LOTTOZAHLEN_ZIEHUNG; zeile++)
                 {
-                    lottozahlen[zeile] = zahlenblock[zeile, spalte];                     
+                    lottozahlen[zeile] = zahlenblock[zeile, spalte];                   
+                }
+                if (s < 5 && !ersteZeileVoll)
+                {
+                    z = 0;
+                    s = spalte;
+                    Console.SetCursorPosition(s * 19, 7 + z);
+                }
+                else if (s == 5)
+                {
+                    ersteZeileVoll = true;
+                    z = 9;
+                    s = 0;
+                    Console.SetCursorPosition(s * 19, 7 + z);
+                }
+                else
+                {
+                    z = 9;
+                    s += 1;
+                    Console.SetCursorPosition(s * 19, 7 + z);
                 }
 
-                for (int i = 1; i < ANZAHL_LOTTOZAHLEN_GESAMT + 1; i++)
+                for (int i = 1; i < ANZAHL_LOTTOZAHLEN_GESAMT + 1; i++)        // Ausgabe Zahlenblock
                 {
                     if (lottozahlen.Contains(i))
                     {
@@ -71,17 +94,31 @@ namespace Lottoschein
 
                     if (i % 6 == 0)
                     {
-                        Console.Write(i);
-                        Console.ResetColor();
-                        Console.WriteLine();
+                        if (i == 6)
+                        {
+                            Console.Write("0" + i);
+                            Console.ResetColor();
+
+                            z++;
+                            Console.SetCursorPosition(s * 19, 7 + z);
+
+                        }
+                        else
+                        {
+                            Console.Write(i);
+                            Console.ResetColor();
+
+                            z++;
+                            Console.SetCursorPosition(s * 19, 7 + z);
+                        }
                     }
                     else
                     {
                         if (i < 10)
                         {
-                            Console.Write(i);
+                            Console.Write("0" + i);
                             Console.ResetColor();
-                            Console.Write("  ");
+                            Console.Write(" ");
                         }
                         else
                         {
@@ -91,18 +128,19 @@ namespace Lottoschein
                         }
                     }
                 }
-                Console.WriteLine("\n");
             }
+            Console.SetCursorPosition(0, 25);
+            Console.WriteLine();
         }
 
-        private static void ErstelleZahlenbloecke(int[,] zahlenblock, Random zufallszahl)
+        private static void ErstelleZahlenbloecke(int[,] zahlenblock)
         {
             int anzahlZahlenbloecke = zahlenblock.GetLength(1);
             int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
 
             for (int spalte = 0; spalte < anzahlZahlenbloecke; spalte++)
             {
-                lottozahlen = ErstelleZahlenblock(zufallszahl);
+                lottozahlen = ErstelleZahlenblock();
 
                 for (int zeile = 0; zeile < ANZAHL_LOTTOZAHLEN_ZIEHUNG; zeile++)
                 {
@@ -111,7 +149,7 @@ namespace Lottoschein
             }
         }
 
-        private static int[] ErstelleZahlenblock(Random zufallszahl)
+        private static int[] ErstelleZahlenblock()
         {
             int[] lottozahlen = new int[ANZAHL_LOTTOZAHLEN_ZIEHUNG];
             //zufallszahl = new Random();                               // Fehler
