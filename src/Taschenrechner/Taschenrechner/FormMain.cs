@@ -74,15 +74,8 @@ namespace Taschenrechner
 
             if (_operatorClicked)
             {
-                if (!lblAusgabe.Contains(","))
-                {
-                    lbl_ausgabe.Text += clickedButton.Text;
-                }
-                else
-                {
-                    lbl_ausgabe.Text = "0";
-                    lbl_ausgabe.Text += clickedButton.Text;
-                }
+                lbl_ausgabe.Text = "0";
+                lbl_ausgabe.Text += clickedButton.Text;
             }
             else
             {
