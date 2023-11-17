@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Taschenrechner.OperatorTypes;
 
 namespace Taschenrechner
 {
@@ -16,6 +17,9 @@ namespace Taschenrechner
         private double _zahl2;
         private bool _operatorClicked;
         private string _operator;
+        private bool _clear;
+
+        private OperatorHandler _selectedOperator;
 
         public FormMain()
         {
@@ -24,7 +28,13 @@ namespace Taschenrechner
             _zahl1 = 0;
             _zahl2 = 0;
             _operatorClicked = false;
+            _clear = false;
             lbl_ausgabe.Text = "0";
+
+            btn_plus.Tag = new OperatorHandler(OperatorMethods.Addition);
+            btn_minus.Tag = new OperatorHandler(OperatorMethods.Subtraction);
+            btn_mal.Tag = new OperatorHandler(OperatorMethods.Multiplication);
+            btn_geteilt.Tag = new OperatorHandler(OperatorMethods.Division);
         }
 
         private void btn_Click(object sender, EventArgs e)
@@ -64,6 +74,7 @@ namespace Taschenrechner
             var clickedButton = sender as Button;
 
             _operator = clickedButton.Text;
+            _selectedOperator = clickedButton.Tag as OperatorHandler;
             _operatorClicked = true;
         }
 
@@ -72,47 +83,18 @@ namespace Taschenrechner
             var clickedButton = sender as Button;
             string lblAusgabe = lbl_ausgabe.Text;
 
-            if (_operatorClicked)
+            if (!lblAusgabe.Contains(","))
             {
-                lbl_ausgabe.Text = "0";
                 lbl_ausgabe.Text += clickedButton.Text;
-            }
-            else
-            {
-                if (!lblAusgabe.Contains(","))
-                {
-                    lbl_ausgabe.Text += clickedButton.Text;
-                }
             }
         }
 
         private void btn_gleich_Click(object sender, EventArgs e)
         {
-            switch (_operator)
-            {
-                case "+":
-                    lbl_ausgabe.Text = "" + (_zahl1 + _zahl2);
-                    _zahl1 = _zahl1 + _zahl2;
-                    break;
+            var erg = _selectedOperator?.Invoke(_zahl1, _zahl2);
+            _zahl1 = Convert.ToDouble(erg);
 
-                case "-":
-                    lbl_ausgabe.Text = "" + (_zahl1 - _zahl2);
-                    _zahl1 = _zahl1 - _zahl2;
-                    break;
-
-                case "*":
-                    lbl_ausgabe.Text = "" + (_zahl1 * _zahl2);
-                    _zahl1 = _zahl1 * _zahl2;
-                    break;
-
-                case "/":
-                    lbl_ausgabe.Text = "" + (_zahl1 / _zahl2);
-                    _zahl1 = _zahl1 / _zahl2;
-                    break;
-
-                default:
-                    break;
-            }
+            lbl_ausgabe.Text = erg.ToString();
         }
 
         private void btn_clear_Click(object sender, EventArgs e)
