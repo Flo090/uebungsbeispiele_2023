@@ -15,9 +15,9 @@ namespace Taschenrechner
     {
         private double _zahl1;
         private double _zahl2;
-        private bool _operatorClicked;
-        private string _operator;
+        double _oldZahl;
         private bool _clear;
+        private bool _gleichClick;
 
         private OperatorHandler _selectedOperator;
 
@@ -27,8 +27,9 @@ namespace Taschenrechner
 
             _zahl1 = 0;
             _zahl2 = 0;
-            _operatorClicked = false;
+            _oldZahl = 0;
             _clear = false;
+            _gleichClick = false;
             lbl_ausgabe.Text = "0";
 
             btn_plus.Tag = new OperatorHandler(OperatorMethods.Addition);
@@ -41,7 +42,7 @@ namespace Taschenrechner
         {
             var clickedButton = sender as Button;
 
-            if (!_operatorClicked)
+            if (!_clear)
             {
                 if (lbl_ausgabe.Text == "0")
                 {
@@ -51,21 +52,11 @@ namespace Taschenrechner
                 {
                     lbl_ausgabe.Text += clickedButton.Text;
                 }
-                _zahl1 = double.Parse(lbl_ausgabe.Text);
-                lbl_zahl1.Text = "" + _zahl1;
             }
             else
             {
-                if (lbl_ausgabe.Text == Convert.ToString(_zahl1))
-                {
-                    lbl_ausgabe.Text = clickedButton.Text;
-                }
-                else
-                {
-                    lbl_ausgabe.Text += clickedButton.Text;
-                }
-                _zahl2 = double.Parse(lbl_ausgabe.Text);
-                lbl_zahl2.Text = "" + _zahl2;
+                lbl_ausgabe.Text = clickedButton.Text;
+                _clear = false;
             }
         }
 
@@ -73,9 +64,12 @@ namespace Taschenrechner
         {
             var clickedButton = sender as Button;
 
-            _operator = clickedButton.Text;
             _selectedOperator = clickedButton.Tag as OperatorHandler;
-            _operatorClicked = true;
+
+            _zahl1 = double.Parse(lbl_ausgabe.Text);
+            lbl_zahl1.Text = "" + _zahl1;
+            _clear = true;
+            _gleichClick = false;
         }
 
         private void btn_komma_Click(object sender, EventArgs e)
@@ -91,17 +85,30 @@ namespace Taschenrechner
 
         private void btn_gleich_Click(object sender, EventArgs e)
         {
+            _oldZahl = _zahl2;
+
+            if (_gleichClick)
+            {
+                _zahl1 = double.Parse(lbl_ausgabe.Text);
+                _zahl2 = _oldZahl;
+                lbl_zahl2.Text = "" + _zahl2;
+            }
+            else
+            {
+                _zahl2 = double.Parse(lbl_ausgabe.Text);
+                lbl_zahl2.Text = "" + _zahl2;
+            }
+
             var erg = _selectedOperator?.Invoke(_zahl1, _zahl2);
-            _zahl1 = Convert.ToDouble(erg);
 
             lbl_ausgabe.Text = erg.ToString();
+            _gleichClick = true;
         }
 
         private void btn_clear_Click(object sender, EventArgs e)
         {
             _zahl1 = 0;
             _zahl2 = 0;
-            _operatorClicked = false;
             lbl_ausgabe.Text = "0";
         }
 
