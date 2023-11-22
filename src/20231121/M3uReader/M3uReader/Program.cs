@@ -12,7 +12,9 @@ namespace M3uReader
         {
             M3uReader myM3uList = new M3uReader();
 
-            myM3uList.readFile();
+            myM3uList.ReadFile();
+
+            myM3uList.WriteFile(myM3uList.GetM3uObjects());
         }
     }
 }
